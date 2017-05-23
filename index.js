@@ -11,8 +11,6 @@ var home = win
 module.exports = function (name, defaults, argv, parse) {
   if('string' !== typeof name)
     throw new Error('rc(name): name *must* be string')
-  if(!argv)
-    argv = require('minimist')(process.argv.slice(2))
   defaults = (
       'string' === typeof defaults
     ? cc.json(defaults) : defaults
@@ -44,17 +42,15 @@ module.exports = function (name, defaults, argv, parse) {
     join(home, '.' + name + 'rc')].forEach(addConfigFile)
   addConfigFile(cc.find('.'+name+'rc'))
   if (env.config) addConfigFile(env.config)
-  if (argv.config) addConfigFile(argv.config)
 
   return deepExtend.apply(null, configs.concat([
     env,
-    argv,
     configFiles.length ? {configs: configFiles, config: configFiles[configFiles.length - 1]} : undefined,
   ]))
 }
 
 if(!module.parent) {
   console.log(
-    JSON.stringify(module.exports(process.argv[2]), false, 2)
+    JSON.stringify(module.exports([]), false, 2)
   )
 }
